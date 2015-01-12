@@ -12,11 +12,11 @@ properties:
     type: string
 
   outputFile:
-    description: File to output G-code to
+    description: File to output gcode to
     type: string
 
   outputDirectory:
-    description: Directory to output G-code-files to
+    description: Directory to output gcode-files to
     type: string
 
   inputFiles:
@@ -25,7 +25,7 @@ properties:
     items:
       type: string
 
-  # Non-slicing actions (no G-code will be generated):
+  # Non-slicing actions (no gcode will be generated):
   repair:
     description: Repair given STL files and save them as <name>_fixed.obj
     type: boolean
@@ -49,12 +49,12 @@ properties:
    # Output options:
    postProcess:
     description: >
-      Generated G-code will be processed with the supplied script.
+      Generated gcode will be processed with the supplied script.
       Call this more than once to process through multiple scripts.
      type: boolean
 
   exportSvg:
-    description: Export a SVG file containing slices instead of G-code.
+    description: Export a SVG file containing slices instead of gcode.
     type: boolean
 
   merge:
@@ -86,8 +86,8 @@ properties:
    type: number
    default: 0
 
-  gCodeFlavor:
-    description: The type of G-code to generate
+  gcodeFlavor:
+    description: The type of gcode to generate
     default: reprap
     enum:
       - reprap
@@ -95,7 +95,7 @@ properties:
       - makerware
       - sailfish
       - mach3
-      - no-extrusion
+      - noExtrusion
 
   useRelativeEDistances:
     description: Enable this to get relative E values
@@ -103,11 +103,11 @@ properties:
     default: false
 
   useFirmwareRetraction:
-    description: Enable firmware-controlled retraction using G10/G11
+    description: Enable firmwareControlled retraction using G10/G11
     type: boolean
     default: false
 
-  gCodeArcs:
+  gcodeArcs:
     description: >
       Use G2/G3 commands for native arcs
       (experimental, not supported by all firmwares)
@@ -121,13 +121,705 @@ properties:
     type: boolean
     default: false
 
-  gCodeComments:
-    description: Make G-code verbose by adding comments
+  gcodeComments:
+    description: Make gcode verbose by adding comments
     type: boolean
     default: false
 
   vibrationLimit:
     description: >
-      Limit the frequency of moves on x- and y-axes in Hz
+      Limit the frequency of moves on x- and yAxes in Hz
       (set zero to disable)
     default: 0
+
+  # Filament Options
+  filamentDiameter:
+    description: Diameter in mm of your raw filament
+    type: number
+    default: 3
+
+  extrusionMultiplier:
+    description: >
+      Change this to alter the amount of plastic extruded.
+      There should be very little need to change this value,
+      which is only useful to compensate for filament packing
+    type: number
+    default: 1
+
+  temperature:
+    description: Extrusion temperature in degree Celsius (set 0 to disable)
+    type: number
+    default: 200
+
+  firstLayerTemperature:
+    description: >
+      Extrusion temperature for the first layer in degree Celsius,
+      (set 0 to disable)
+    default: 200
+
+  bedTemperature:
+    description: Heated bed temperature in degree Celsius (set 0 to disable)
+    type: number
+    default: 0
+
+  firstLayerBedTemperature:
+    description: >
+      Heated bed temperature for the first layer in degree Celsius
+      (set 0 to disable)
+    default: 0
+
+  # Speed options
+  travelSpeed:
+    description: Speed of non-print moves in mm/s
+    type: number
+    default: 130
+
+  perimeterSpeed:
+    description: Speed of print moves for perimeters in mm/s
+    type: number
+    default: 30
+
+  smallPerimeterSpeed:
+    description: >
+      Speed of print moves for small perimeters in mm/s
+      or % over perimeter speed
+    oneOf:
+      - type: number
+      - type: string
+    default: 30
+
+  externalPerimeterSpeed:
+    description: >
+      Speed of print moves for the external perimeter in mm/s
+      or % over perimeter speed
+    oneOf:
+      - type: number
+      - type: string
+    default: 70%
+
+  infillSpeed:
+    description: Speed of print moves in mm/s
+    type: number
+    default: 60
+
+  solidInfillSpeed:
+    description: >
+      Speed of print moves for solid surfaces in mm/s
+      or % over infill speed
+    anyOf:
+      - type: number
+      - type: string
+    default: 60
+
+  topSolidInfillSpeed:
+    description: >
+      Speed of print moves for top surfaces in mm/s
+      or % over solid infill speed
+    anyOf:
+      - type: number
+      - type: string
+    default: 50
+
+  supportMaterialSpeed:
+    description: Speed of support material print moves in mm/s
+    type: number
+    default: 60
+
+  supportMaterialInterfaceSpeed:
+    description: >
+      Speed of support material interface print moves in mm/s
+      or % over support material speed
+    anyOf:
+      - type: number
+      - type: string
+    default: 100%
+
+  bridgeSpeed:
+    description: Speed of bridge print moves in mm/s
+    type: number
+    default: 60
+
+  gapFillSpeed:
+    description: Speed of gap fill print moves in mm/s
+    type: number
+    default: 20
+
+  firstLayerSpeed:
+    description: >
+      Speed of print moves for bottom layer,
+      expressed either as an absolute value
+      or as a percentage over normal speeds
+    anyOf:
+      - type: number
+      - type: string
+    default: 30%
+
+  # Acceleration Options
+  perimeterAcceleration:
+    description: >
+      Overrides firmware's default acceleration for perimeters in mm/s^2
+      (set zero to disable)
+    type: number
+    default: 0
+
+  infillAcceleration:
+    description: >
+      Overrides firmware's default acceleration for infill in mm/s^2
+      (set zero to disable)
+    type: number
+    default: 0
+
+  bridgeAcceleration:
+    description: >
+      Overrides firmware's default acceleration for bridges in mm/s^2
+      (set zero to disable)
+    type: number
+    default: 0
+
+  firstLayerAcceleration:
+    description: >
+      Overrides firmware's default acceleration for first layer in mm/s^2
+      (set zero to disable)
+    type: number
+    default: 0
+
+  defaultAcceleration:
+    description: >
+      Acceleration will be reset to this value in mm/s^2
+      after the specific settings above have been applied.
+      (set zero to disable)
+    type: number
+    default: 130
+
+  # Accuracy Options:
+  layerHeight:
+    description: Layer height in mm
+    type: number
+    default: 0.4
+
+  firstLayerHeight:
+    description: Layer height for first layer in mm or %
+    anyOf:
+      - type: number
+      - type: string
+    default: 0.35
+
+  infillEveryLayers:
+    description: Infill every N layers
+    type: number
+    default: 1
+
+  solidInfillEveryLayers:
+    description: Force a solid layer every N layers
+    type: number
+    default: 0
+
+  # Print Options
+  perimeters:
+    description: Number of perimeters/horizontal skins
+    type: number
+    minimum: 0
+    default: 3
+
+  topSolidLayers:
+    description: Number of solid layers to do for top surfaces
+    type: number
+    minimum: 0
+    default: 3
+
+  bottomSolidLayers:
+    description: Number of solid layers to do for bottom surfaces
+    minimum: 0
+    default: 3
+
+  solidLayers:
+    description: Shortcut for setting the two options above at once
+    type: boolean
+
+  fillDensity:
+    description: Infill density
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0.4
+
+  fillAngle:
+    description: Infill angle in degrees
+    type: number
+    minimum: 0
+    maximum: 90
+    default: 45
+
+  fillPattern:
+    description: Pattern to use to fill nonSolid layers
+    type: string
+    default: honeycomb
+
+  solidFillPattern:
+    description: Pattern to use to fill solid layers
+    type: string
+    default: rectilinear
+
+  startGcode:
+    description: >
+      Load initial gcode from the supplied file.
+      This will overwrite the default command (home all axes [G28]).
+    type: boolean
+
+  endGcode:
+    description: >
+      Load final gcode from the supplied file.
+      This will overwrite the default commands
+      (turn off temperature [M104 S0],
+      home X axis [G28 X], disable motors [M84]).
+    type: boolean
+
+  layerGcode:
+    description: Load layer-change gcode from the supplied file
+    type: boolean
+
+  toolchangeGcode:
+    description:  Load toolChange gcode from the supplied file
+    type: boolean
+
+  seamPosition:
+    description: Position of loop starting points
+    enum:
+      - random
+      - nearest
+      - aligned
+    default: aligned
+
+  externalPerimetersFirst:
+    description: Reverse perimeter order
+    type: boolean
+    default: false
+
+  spiralVase:
+    description: >
+      Experimental option to raise Z gradually
+      when printing singleWalled vases
+    type: boolean
+    default: false
+
+  onlyRetractWhenCrossingPerimeters:
+    description: >
+      Disable retraction when travelling between
+      infill paths inside the same island.
+    type: boolean
+    default: false
+
+  solidInfillBelowArea:
+    description: >
+      Force solid infill when a region has a smaller area
+      than this threshold in mm^2
+    type: number
+    default: 70
+
+  infillOnlyWhereNeeded:
+    description: Only infill under ceilings
+    type: boolean
+    default: false
+
+  infillFirst:
+    description: Make infill before perimeters
+    type: boolean
+    default: false
+
+  # Quality options (slower slicing)
+  extraPerimeters:
+    description: Add more perimeters when needed
+    type: boolean
+    default: true
+
+  avoidCrossingPerimeters:
+    description: Optimize travel moves so that no perimeters are crossed
+    type: boolean
+    default: false
+
+  thinWalls:
+    description: Detect single-width walls
+    type: boolean
+    default: true
+
+  overhangs:
+    description: >
+      Experimental option to use bridge flow,
+      speed and fan for overhangs
+    type: boolean
+    default: true
+
+  # Support material options
+  supportMaterial:
+    description: Generate support material for overhangs
+    type: boolean
+
+  supportMaterialThreshold:
+    description: Overhang threshold angle (set 0 for automatic detection)
+    type: number
+    minimum: 0
+    maximum: 90
+    default: 0
+
+  supportMaterialPattern:
+    description: Pattern to use for support material
+    type: string
+    default: pillars
+
+  supportMaterialSpacing:
+    description: Spacing between pattern lines in mm
+    type: number
+    default: 2.5
+
+  supportMaterialAngle:
+    description: Support material angle in degrees
+    type: number
+    minimum: 0
+    maximum: 90
+    default: 0
+
+  supportMaterialInterfaceLayers:
+    description: >
+      Number of perpendicular layers between
+      support material and object
+    type: number
+    minimum: 0
+    default: 3
+
+  supportMaterialInterfaceSpacing:
+    description: >
+      Spacing between interface pattern lines in mm
+      (set 0 to get a solid layer)
+    type: number
+    default: 0
+
+  raftLayers:
+    description: Number of layers to raise the printed objects by
+    type: number
+    minimum: 0
+    default: 0
+
+  supportMaterialEnforceLayers:
+    description: >
+      Enforce support material on the specified number of layers from bottom,
+      regardless of support-material and threshold
+    type: number
+    minimum: 0
+    default: 0
+
+  dontSupportBridges:
+    description: >
+      Experimental option for preventing support-material
+      from being generated under bridged areas
+    type: boolean
+    default: true
+
+  # Retraction options:
+  retractLength:
+    description: Length of retraction in mm when pausing extrusion
+    type: number
+    default: 1
+
+  retractSpeed:
+    description: Speed for retraction in mm/s
+    type: number
+    default: 30
+
+  retractRestartExtra:
+    description: >
+      Additional amount of filament in mm
+      to push after compensating retraction
+    type: number
+    default: 0
+
+  retractBeforeTravel:
+    description: Only retract before travel moves of this length in mm
+    type: number
+    default: 2
+
+  retractLift:
+    description: Lift Z by the given distance in mm when retracting
+    type: number
+    default: 0
+
+  retractLayerChange:
+    description: Enforce a retraction before each Z move
+    type: boolean
+    default: true
+
+  wipe:
+    description: Wipe the nozzle while doing a retraction
+    type: boolean
+    default: false
+
+
+  # Retraction options for multi-extruder setups
+  retractLengthToolchange:
+    description: Length of retraction in mm when disabling tool
+    type: number
+    default: 1
+
+  retractRestartExtraToolchange:
+    description: >
+      Additional amount of filament in mm
+      to push after switching tool
+    type: number
+    default: 0
+
+
+  # Cooling options:
+  cooling:
+    description: Enable fan and cooling control
+    type: boolean
+
+  minFanSpeed:
+    description: Minimum fan speed
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0.35
+
+  maxFanSpeed:
+    description: Maximum fan speed
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 1
+
+  bridgeFanSpeed:
+    description: Fan speed to use when bridging
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 1
+
+  fanBelowLayerTime:
+    description: >
+      Enable fan if layer print time is below
+      this approximate number of seconds
+    type: number
+    default: 60
+
+  slowdownBelowLayerTime:
+    description: >
+      Slow down if layer print time is below
+      this approximate number of seconds
+    type: number
+    default: 30
+
+  minPrintSpeed:
+    description: Minimum print speed in mm/s
+    type: number
+    default: 10
+
+  disableFanFirstLayers:
+    description: Disable fan for the first n layers
+    type: number
+    default: 1
+
+  fanAlwaysOn:
+    description: >
+      Keep fan always on at min fan speed,
+      even for layers that don't need cooling
+    type: boolean
+
+
+  # Skirt options:
+  skirts:
+    description: Number of skirts to draw
+    type: number
+    minimum: 0
+    default: 1
+
+  skirtDistance:
+    description: Distance in mm between innermost skirt and object
+    type: number
+    default: 6
+
+  skirtHeight:
+    description: Height of skirts to draw (expressed in layers)
+    type: number
+    minimum: 0
+    default: 1
+
+  minSkirtLength:
+    description: >
+      Generate no less than the number of loops required to consume
+      this length of filament on the first layer, for each extruder in mm
+    type: number
+    minimum: 0
+    default: 0
+
+  brimWidth:
+    description: >
+      Width of the brim in mm that will get added to
+      each object to help adhesion
+    type: number
+    default: 0
+
+
+  # Transform options:
+  scale:
+    description: Factor for scaling input object
+    type: number
+    default: 1
+
+  rotate:
+    description: Rotation angle in degrees
+    type: number
+    minimum: 0
+    maximum: 360
+    default: 0
+
+  duplicate:
+    description: Number of items with autoArrange
+    type: number
+    minimum: 1
+    default: 1
+
+  bedSize:
+    description: Bed size in mm (only used for auto-arrange)
+    type: object
+    properties:
+      width:
+        type: number
+        default: 200
+      height:
+        type: number
+        default: 200
+
+  duplicateGrid:
+    description: Number of items with grid arrangement
+    type: string
+    default: 1,1
+
+  duplicateDistance:
+    description: Distance in mm between copies
+    type: number
+    default: 6
+
+
+  # Sequential printing options
+  completeObjects:
+    description: >
+      When printing multiple objects and/or copies,
+      complete each one before starting the next one
+      (watch out for extruder collisions)
+    type: boolean
+    default: false
+
+  extruderClearanceRadius:
+    description: >
+      Radius in mm above which extruder
+      won't collide with anything
+    type: number
+    default: 20
+
+  extruderClearanceHeight:
+    description: >
+      Maximum vertical extruder depth.
+      I.e. vertical distance from extruder tip and carriage bottom
+    type: number
+    default: 20
+
+
+  # Miscellaneous options
+  notes:
+    description: Notes to be added as comments to the output file
+    type: string
+
+  resolution:
+    description: >
+      Minimum detail resolution in mm
+      (set 0 for full resolution)
+    type: number
+    default: 0
+
+
+  # Flow options (advanced)
+  extrusionWidth:
+    description: >
+      Set extrusion width manually.
+      It accepts either an absolute value in mm (like 0.65)
+      or a percentage over layer height (like 200%)
+    oneOf:
+      - type: number
+      - type: string
+
+  firstLayerExtrusionWidth:
+    description: Set a different extrusion width for first layer
+    type: number
+
+  perimeterExtrusionWidth:
+    description: Set a different extrusion width for perimeters
+    type: number
+
+  infillExtrusionWidth:
+    description: Set a different extrusion width for infill
+    type: number
+
+  solidInfillExtrusionWidth:
+    description: Set a different extrusion width for solid infill
+    type: number
+
+  topInfillExtrusionWidth:
+    description: Set a different extrusion width for top infill
+    type: number
+
+  supportMaterialExtrusionWidth:
+    description: Set a different extrusion width for support material
+    type: number
+
+  bridgeFlowRatio:
+    description: Multiplier for extrusion when bridging
+    type: number
+    minimum: 0
+    exclusiveMinimum: true
+    default: 1
+
+
+  # Multiple extruder options:
+  extruderOffset:
+    description: >
+      Offset of each extruder if firmware doesn't handle the displacement
+      (can be specified multiple times)
+    type: string
+    default: 0x0
+
+  perimeterExtruder:
+    description: Extruder to use for perimeters
+    type: number
+    minimum: 1
+    default: 1
+
+  infillExtruder:
+    description: Extruder to use for infill
+    type: number
+    minimum: 1
+    default: 1
+
+  supportMaterialExtruder:
+    description:  Extruder to use for support material
+    type: number
+    minimum: 1
+    default: 1
+
+  supportMaterialInterfaceExtruder:
+    description: Extruder to use for support material interface
+    type: number
+    minimum: 1
+    default: 1
+
+  oozePrevention:
+    description: >
+      Drop temperature and park extruders outside a full
+      skirt for automatic wiping
+    type: boolean
+    default: false
+
+  standbyTemperatureDelta:
+    description: >
+      Temperature difference to be applied when an extruder
+      is not active and ooze-prevention is enabled
+    type: number
+    default: -5
