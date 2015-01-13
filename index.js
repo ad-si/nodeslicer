@@ -82,7 +82,21 @@ function getShellCommand (o) {
 		'--temperature ' + o.temperature,
 		'--first-layer-temperature ' + o.firstLayerTemperature,
 		'--bed-temperature ' + o.bedTemperature,
-		'--first-layer-bed-temperature ' + firstLayerBedTemperature
+		'--first-layer-bed-temperature ' + o.firstLayerBedTemperature,
+
+		// Speed options
+		'--travel-speed ' + o.travelSpeed,
+		'--perimeter-speed ' + o.perimeterSpeed,
+		'--small-perimeter-speed ' + o.smallPerimeterSpeed,
+		'--external-perimeter-speed ' + o.externalPerimeterSpeed,
+		'--infill-speed ' + o.infillSpeed,
+		'--solid-infill-speed ' + o.solidInfillSpeed,
+		'--top-solid-infill-speed ' + o.topSolidInfillSpeed,
+		'--support-material-speed ' + o.supportMaterialSpeed,
+		'--support-material-interface-speed ' + o.supportMaterialInterfaceSpeed,
+		'--bridge-speed ' + o.bridgeSpeed,
+		'--gap-fill-speed ' + o.gapFillSpeed,
+		'--first-layer-speed ' + o.firstLayerSpeed
 	]
 
 	return shellCommand.join(' ')
