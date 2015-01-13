@@ -15,8 +15,18 @@ properties:
     description: File to output gcode to
     type: string
 
+  outputFiles:
+    description: Files to output gcode to
+    type: array
+    items:
+      type: string
+
   outputDirectory:
     description: Directory to output gcode-files to
+    type: string
+
+  inputFile:
+    description: Input STL-file
     type: string
 
   inputFiles:
@@ -47,11 +57,12 @@ properties:
     minimum: 1
 
    # Output options:
-   postProcess:
+   postProcessScripts:
     description: >
-      Generated gcode will be processed with the supplied script.
-      Call this more than once to process through multiple scripts.
-     type: boolean
+      Generated gcode will be processed with the supplied scripts.
+    type: array
+    item:
+      type: string
 
   exportSvg:
     description: Export a SVG file containing slices instead of gcode.
@@ -107,6 +118,11 @@ properties:
     type: boolean
     default: false
 
+  useVolumetricE:
+    description: Express E in cubic millimeters and prepend M200
+    type: boolean
+    default: false
+
   gcodeArcs:
     description: >
       Use G2/G3 commands for native arcs
@@ -131,6 +147,14 @@ properties:
       Limit the frequency of moves on x- and yAxes in Hz
       (set zero to disable)
     default: 0
+
+  pressureAdvance:
+    description: >
+      Adjust pressure using the experimental advance algorithm
+      (K constant, set zero to disable)
+    type: number
+    default: 0
+
 
   # Filament Options
   filamentDiameter:
