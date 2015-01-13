@@ -28,13 +28,6 @@ function getBinaryPath () {
 	return binPath
 }
 
-function yesNoify (value) {
-	if (value)
-		return 'yes'
-	else
-		return 'no'
-}
-
 function getShellCommand (o) {
 
 	var shellCommand
@@ -67,9 +60,9 @@ function getShellCommand (o) {
 		'--print-center ' + o.printCenter.x + ',' + o.printCenter.y,
 		'--z-offset ' + o.zOffset,
 		'--gcode-flavor ' + o.gcodeFlavor,
-		'--use-relative-e-distances ' + yesNoify(o.useRelativeEDistances),
-		'--use-firmware-retraction ' + yesNoify(o.useFirmwareRetraction),
-		'--use-volumetric-e ' + yesNoify(o.useVolumetricE),
+		o.useRelativeEDistances ? '--use-relative-e-distances ' : '',
+		o.useFirmwareRetraction ? '--use-firmware-retraction ' : '',
+		o.useVolumetricE ? '--use-volumetric-e ' : '',
 		o.gcodeArcs ? '--gcode-arcs' : '',
 		o.g0 ? '--g0' : '',
 		o.gcodeComments ? '--gcode-comments' : '',
@@ -96,7 +89,42 @@ function getShellCommand (o) {
 		'--support-material-interface-speed ' + o.supportMaterialInterfaceSpeed,
 		'--bridge-speed ' + o.bridgeSpeed,
 		'--gap-fill-speed ' + o.gapFillSpeed,
-		'--first-layer-speed ' + o.firstLayerSpeed
+		'--first-layer-speed ' + o.firstLayerSpeed,
+
+		// Accelerator options
+		'--perimeter-acceleration ' + o.perimeterAcceleration,
+		'--infill-acceleration ' + o.infillAcceleration,
+		'--bridge-acceleration ' + o.bridgeAcceleration,
+		'--first-layer-acceleration ' + o.firstLayerAcceleration,
+		'--default-acceleration ' + o.defaultAcceleration,
+
+		// Accuracy options
+		'--layer-height ' + o.layerHeight,
+		'--first-layer-height ' + o.firstLayerHeight,
+		'--infill-every-layers ' + o.infillEveryLayers,
+		'--solid-infill-every-layers ' + o.solidInfillEveryLayers,
+
+		// Print Options
+		'--perimeters ' + o.perimeters,
+		'--top-solid-layers ' + o.topSolidLayers,
+		'--bottom-solid-layers ' + o.bottomSolidLayers,
+		o.solidLayers ? '--solid-layers' : '',
+		'--fill-density ' + o.fillDensity,
+		'--fill-angle ' + o.fillAngle,
+		'--fill-pattern ' + o.fillPattern,
+		'--solid-fill-pattern ' + o.solidFillPattern,
+		o.startGcode ? '--start-gcode' : '',
+		o.endGcode ? '--end-gcode ' : '',
+		o.layerGcode ? '--layer-gcode ' : '',
+		o.toolchangeGcode ? '--toolchange-gcode ' : '',
+		'--seam-position ' + o.seamPosition,
+		o.externalPerimetersFirst ? '--external-perimeters-first ' : '',
+		o.spiralVase ? '--spiral-vase ' : '',
+		o.onlyRetractWhenCrossingPerimeters ?
+			'--only-retract-when-crossing-perimeters ' : '',
+		'--solid-infill-below-area ' + o.solidInfillBelowArea,
+		o.infillOnlyWhereNeeded ? '--infill-only-where-needed ' : '',
+		o.infillFirst ? '--infill-first ' : ''
 	]
 
 	return shellCommand.join(' ')
