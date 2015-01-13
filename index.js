@@ -124,7 +124,49 @@ function getShellCommand (o) {
 			'--only-retract-when-crossing-perimeters ' : '',
 		'--solid-infill-below-area ' + o.solidInfillBelowArea,
 		o.infillOnlyWhereNeeded ? '--infill-only-where-needed ' : '',
-		o.infillFirst ? '--infill-first ' : ''
+		o.infillFirst ? '--infill-first ' : '',
+
+		// Quality options
+		o.extraPerimeters ? '--extra-perimeters' : '',
+		o.avoidCrossingPerimeters ? '--avoid-crossing-perimeters' : '',
+		o.thinWalls ? '--thin-walls' : '',
+		o.overhangs ? '--overhangs' : '',
+
+		// Support material options
+		o.supportMaterial ? '--support-material ' : '',
+		'--support-material-threshold ' + o.supportMaterialThreshold,
+		'--support-material-pattern ' + o.supportMaterialPattern,
+		'--support-material-spacing ' + o.supportMaterialSpacing,
+		'--support-material-angle ' + o.supportMaterialAngle,
+		'--support-material-interface-layers ' + o.supportMaterialInterfaceLayers,
+		'--support-material-interface-spacing ' + o.supportMaterialInterfaceSpacing,
+		'--raft-layers ' + o.raftLayers,
+		'--support-material-enforce-layers ' + o.supportMaterialEnforceLayers,
+		o.dontSupportBridges ? '--dont-support-bridges ' : '',
+
+		// Retraction options
+		'--retract-length ' + o.retractLength,
+		'--retract-speed ' + o.retractSpeed,
+		'--retract-restart-extra ' + o.retractRestartExtra,
+		'--retract-before-travel ' + o.retractBeforeTravel,
+		'--retract-lift ' + o.retractLift,
+		o.retractLayerChange ? '--retract-layer-change' : '',
+		o.wipe ? '--wipe' : '',
+
+		// Retraction options for multi-extruder setups
+		'--retract-length-toolchange ' + o.retractLengthToolchange,
+		'--retract-restart-extra-toolchange ' + o.retractRestartExtraToolchange,
+
+		// Cooling options
+		o.cooling ? '--cooling ' : ' ',
+		'--min-fan-speed ' + o.minFanSpeed,
+		'--max-fan-speed ' + o.maxFanSpeed,
+		'--bridge-fan-speed ' + o.bridgeFanSpeed,
+		'--fan-below-layer-time ' + o.fanBelowLayerTime,
+		'--slowdown-below-layer-time ' + o.slowdownBelowLayerTime,
+		'--min-print-speed ' + o.minPrintSpeed,
+		'--disable-fan-first-layers ' + o.disableFanFirstLayers,
+		o.fanAlwaysOn ? '--fan-always-on ' : ''
 	]
 
 	return shellCommand.join(' ')
