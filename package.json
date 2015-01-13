@@ -1,0 +1,30 @@
+{
+  "name": "nodeslicer",
+  "version": "0.1.0",
+  "description": "Node.js wrapper for Slic3r",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adius/nodeslicer.git"
+  },
+  "keywords": [
+    "slicer",
+    "slic3r"
+  ],
+  "author": "Adrian Sieber <mail@adriansieber.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adius/nodeslicer/issues"
+  },
+  "homepage": "https://github.com/adius/nodeslicer",
+  "dependencies": {
+    "clone": "^0.2.0",
+    "js-yaml": "^3.2.5",
+    "json-schema-defaults": "0.0.2",
+    "temp": "^0.8.1",
+    "tv4": "^1.1.5"
+  },
+  "scripts": {
+    "test": "node ./test/index.js"
+  }
+}
