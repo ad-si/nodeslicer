@@ -701,17 +701,6 @@ properties:
     minimum: 1
     default: 1
 
-  bedSize:
-    description: Bed size in mm (only used for auto-arrange)
-    type: object
-    properties:
-      width:
-        type: number
-        default: 200
-      height:
-        type: number
-        default: 200
-
   duplicateGrid:
     description: Number of items with grid arrangement
     type: string
@@ -721,6 +710,10 @@ properties:
     description: Distance in mm between copies
     type: number
     default: 6
+
+  xySizeCompensation:
+    description: Grow/shrink objects by the configured absolute distance in mm
+    default: 0
 
 
   # Sequential printing options
@@ -759,6 +752,17 @@ properties:
     type: number
     default: 0
 
+  bedSize:
+    description: Bed size in mm (only used for auto-arrange)
+    type: object
+    properties:
+      width:
+        type: number
+        default: 200
+      height:
+        type: number
+        default: 200
+
 
   # Flow options (advanced)
   extrusionWidth:
@@ -776,6 +780,10 @@ properties:
 
   perimeterExtrusionWidth:
     description: Set a different extrusion width for perimeters
+    type: number
+
+  externalPerimeterExtrusionWidth:
+    description: Set a different extrusion width for external perimeters
     type: number
 
   infillExtrusionWidth:
@@ -818,6 +826,12 @@ properties:
 
   infillExtruder:
     description: Extruder to use for infill
+    type: number
+    minimum: 1
+    default: 1
+
+  solidInfillExtruder:
+    description: Extruder to use for solid infill
     type: number
     minimum: 1
     default: 1
