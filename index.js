@@ -138,8 +138,10 @@ function getShellCommand (o) {
 		'--support-material-pattern ' + o.supportMaterialPattern,
 		'--support-material-spacing ' + o.supportMaterialSpacing,
 		'--support-material-angle ' + o.supportMaterialAngle,
-		'--support-material-interface-layers ' + o.supportMaterialInterfaceLayers,
-		'--support-material-interface-spacing ' + o.supportMaterialInterfaceSpacing,
+		'--support-material-interface-layers ' +
+			o.supportMaterialInterfaceLayers,
+		'--support-material-interface-spacing ' +
+			o.supportMaterialInterfaceSpacing,
 		'--raft-layers ' + o.raftLayers,
 		'--support-material-enforce-layers ' + o.supportMaterialEnforceLayers,
 		o.dontSupportBridges ? '--dont-support-bridges ' : '',
@@ -166,7 +168,55 @@ function getShellCommand (o) {
 		'--slowdown-below-layer-time ' + o.slowdownBelowLayerTime,
 		'--min-print-speed ' + o.minPrintSpeed,
 		'--disable-fan-first-layers ' + o.disableFanFirstLayers,
-		o.fanAlwaysOn ? '--fan-always-on ' : ''
+		o.fanAlwaysOn ? '--fan-always-on ' : '',
+
+		// Skirt options
+		'--skirts ' + o.skirts,
+		'--skirt-distance ' + o.skirtDistance,
+		'--skirt-height ' + o.skirtHeight,
+		'--min-skirt-length ' + o.minSkirtLength,
+		'--brim-width ' + o.brimWidth,
+
+		// Transform options
+		'--scale ' + o.scale,
+		'--rotate ' + o.rotate,
+		'--duplicate ' + o.duplicate,
+		'--duplicate-grid ' + o.duplicateGrid.x + ',' + o.duplicateGrid.y,
+		'--duplicate-distance ' + o.duplicateDistance,
+		'--xy-size-compensation ' + o.xySizeCompensation,
+
+		// Sequential printing options
+		o.completeObjects ? '--complete-objects ' : '',
+		'--extruder-clearance-radius ' + o.extruderClearanceRadius,
+		'--extruder-clearance-height ' + o.extruderClearanceHeight,
+
+		// Miscellaneous options:
+		'--notes ' + o.notes,
+		'--resolution ' + o.resolution,
+		'--bed-size ' + o.bedSize.width + ',' + o.bedSize.height,
+
+		// Flow options (advanced):
+		'--extrusion-width ' + o.extrusion,
+		'--first-layer-extrusion-width ' + o.firstLayerExtrusionWidth,
+		'--perimeter-extrusion-width ' + o.perimeterExtrusionWidth,
+		'--external-perimeter-extrusion-width ' +
+			o.externalPerimeterExtrusionWidth,
+		'--infill-extrusion-width ' + o.infillExtrusionWidth,
+		'--solid-infill-extrusion-width ' + o.solidInfillExtrusionWidth,
+		'--top-infill-extrusion-width ' + o.topInfillExtrusionWidth,
+		'--support-material-extrusion-width ' + o.supportMaterialExtrusionWidth,
+		'--bridge-flow-ratio ' + o.bridgeFlowRatio,
+
+		// Multiple extruder options:
+		'--extruder-offset ' + o.extruderOffset,
+		'--perimeter-extruder ' + o.perimeterExtruder,
+		'--infill-extruder ' + o.infillExtruder,
+		'--solid-infill-extruder ' + o.solidInfillExtruder,
+		'--support-material-extruder ' + o.supportMaterialExtruder,
+		'--support-material-interface-extruder ' +
+			o.supportMaterialInterfaceExtruder,
+		o.oozePrevention ? '--ooze-prevention ' : '',
+		o.standbyTemperatureDelta ? '--standby-temperature-delta' : ''
 	]
 
 	return shellCommand.join(' ')
