@@ -28,11 +28,14 @@ function getBinaryPath () {
 	return binPath
 }
 
+function toPercentString (aNumber) {
+	return String(aNumber * 100) + '%'
+}
+
+
 function getShellCommand (o) {
 
 	var shellCommand
-
-	o.outputFile = o.outputFile || temp.path({suffix: '.gcode'})
 
 	shellCommand = [
 		getBinaryPath(),
@@ -67,7 +70,7 @@ function getShellCommand (o) {
 		o.g0 ? '--g0' : '',
 		o.gcodeComments ? '--gcode-comments' : '',
 		'--vibration-limit ' + o.vibrationLimit,
-		'--pressure-advance ' + o.pressureAdvance,
+		//'--pressure-advance ' + o.pressureAdvance,
 
 		// Filament options
 		'--filament-diameter ' + o.filamentDiameter,
@@ -109,7 +112,7 @@ function getShellCommand (o) {
 		'--top-solid-layers ' + o.topSolidLayers,
 		'--bottom-solid-layers ' + o.bottomSolidLayers,
 		o.solidLayers ? '--solid-layers' : '',
-		'--fill-density ' + o.fillDensity,
+		'--fill-density ' + toPercentString(o.fillDensity),
 		'--fill-angle ' + o.fillAngle,
 		'--fill-pattern ' + o.fillPattern,
 		'--solid-fill-pattern ' + o.solidFillPattern,
@@ -121,7 +124,7 @@ function getShellCommand (o) {
 		o.externalPerimetersFirst ? '--external-perimeters-first ' : '',
 		o.spiralVase ? '--spiral-vase ' : '',
 		o.onlyRetractWhenCrossingPerimeters ?
-			'--only-retract-when-crossing-perimeters ' : '',
+		'--only-retract-when-crossing-perimeters ' : '',
 		'--solid-infill-below-area ' + o.solidInfillBelowArea,
 		o.infillOnlyWhereNeeded ? '--infill-only-where-needed ' : '',
 		o.infillFirst ? '--infill-first ' : '',
@@ -139,9 +142,9 @@ function getShellCommand (o) {
 		'--support-material-spacing ' + o.supportMaterialSpacing,
 		'--support-material-angle ' + o.supportMaterialAngle,
 		'--support-material-interface-layers ' +
-			o.supportMaterialInterfaceLayers,
+		o.supportMaterialInterfaceLayers,
 		'--support-material-interface-spacing ' +
-			o.supportMaterialInterfaceSpacing,
+		o.supportMaterialInterfaceSpacing,
 		'--raft-layers ' + o.raftLayers,
 		'--support-material-enforce-layers ' + o.supportMaterialEnforceLayers,
 		o.dontSupportBridges ? '--dont-support-bridges ' : '',
@@ -161,9 +164,9 @@ function getShellCommand (o) {
 
 		// Cooling options
 		o.cooling ? '--cooling ' : ' ',
-		'--min-fan-speed ' + o.minFanSpeed,
-		'--max-fan-speed ' + o.maxFanSpeed,
-		'--bridge-fan-speed ' + o.bridgeFanSpeed,
+		'--min-fan-speed ' + (o.minFanSpeed * 100), // in %
+		'--max-fan-speed ' + (o.maxFanSpeed * 100), // in %
+		'--bridge-fan-speed ' + (o.bridgeFanSpeed * 100), // in %
 		'--fan-below-layer-time ' + o.fanBelowLayerTime,
 		'--slowdown-below-layer-time ' + o.slowdownBelowLayerTime,
 		'--min-print-speed ' + o.minPrintSpeed,
@@ -181,9 +184,9 @@ function getShellCommand (o) {
 		'--scale ' + o.scale,
 		'--rotate ' + o.rotate,
 		'--duplicate ' + o.duplicate,
-		'--duplicate-grid ' + o.duplicateGrid.x + ',' + o.duplicateGrid.y,
+		'--duplicate-grid ' + o.duplicateGrid,
 		'--duplicate-distance ' + o.duplicateDistance,
-		'--xy-size-compensation ' + o.xySizeCompensation,
+		//'--xy-size-compensation ' + o.xySizeCompensation,
 
 		// Sequential printing options
 		o.completeObjects ? '--complete-objects ' : '',
@@ -191,16 +194,17 @@ function getShellCommand (o) {
 		'--extruder-clearance-height ' + o.extruderClearanceHeight,
 
 		// Miscellaneous options:
-		'--notes ' + o.notes,
+		o.notes ? '--notes ' + o.notes : '',
 		'--resolution ' + o.resolution,
 		'--bed-size ' + o.bedSize.width + ',' + o.bedSize.height,
 
 		// Flow options (advanced):
-		'--extrusion-width ' + o.extrusion,
-		'--first-layer-extrusion-width ' + o.firstLayerExtrusionWidth,
+		'--extrusion-width ' + o.extrusionWidth,
+		o.firstLayerExtrusionWidth ?
+		'--first-layer-extrusion-width ' + o.firstLayerExtrusionWidth : '',
 		'--perimeter-extrusion-width ' + o.perimeterExtrusionWidth,
-		'--external-perimeter-extrusion-width ' +
-			o.externalPerimeterExtrusionWidth,
+		//'--external-perimeter-extrusion-width ' +
+		//  o.externalPerimeterExtrusionWidth,
 		'--infill-extrusion-width ' + o.infillExtrusionWidth,
 		'--solid-infill-extrusion-width ' + o.solidInfillExtrusionWidth,
 		'--top-infill-extrusion-width ' + o.topInfillExtrusionWidth,
@@ -208,25 +212,49 @@ function getShellCommand (o) {
 		'--bridge-flow-ratio ' + o.bridgeFlowRatio,
 
 		// Multiple extruder options:
-		'--extruder-offset ' + o.extruderOffset,
+		o.extruderOffset.x || o.extruderOffset.y ?
+		'--extruder-offset ' + o.extruderOffset.x + 'x' +
+		o.extruderOffset.y : '',
 		'--perimeter-extruder ' + o.perimeterExtruder,
 		'--infill-extruder ' + o.infillExtruder,
-		'--solid-infill-extruder ' + o.solidInfillExtruder,
+		//'--solid-infill-extruder ' + o.solidInfillExtruder,
 		'--support-material-extruder ' + o.supportMaterialExtruder,
 		'--support-material-interface-extruder ' +
-			o.supportMaterialInterfaceExtruder,
+		o.supportMaterialInterfaceExtruder,
 		o.oozePrevention ? '--ooze-prevention ' : '',
-		o.standbyTemperatureDelta ? '--standby-temperature-delta' : ''
+		'--standby-temperature-delta ' + o.standbyTemperatureDelta,
+		o.inputFile ? o.inputFile : '',
+		o.inputFiles !== [] ? o.inputFiles.join(' ') : ''
 	]
+
+	// TODO: Fix wrong behavior of firstLayerExtrusionWidth and extruderOffset
+	// TODO: if value == default value (see issues in slic3r)
+	/*
+	 return [
+	 shellCommand[0],
+	 shellCommand[1],
+	 '--first-layer-extrusion-width ' + o.firstLayerExtrusionWidth,
+	 '--extruder-offset ' + o.extruderOffset.x + 2 + 'x' +
+	 o.extruderOffset.y + 2,
+	 shellCommand[shellCommand.length - 2]
+	 ].join(' ')
+	 */
 
 	return shellCommand.join(' ')
 }
 
 nodeSlicer.render = function (options, callback) {
 
-	var validationResult = tv4.validateResult(
-		options, configSchema, null, true
-	)
+	var useTemporaryOutputFile,
+		validationResult,
+		outputFile
+
+	if (!options.outputFile) {
+		useTemporaryOutputFile = true
+		options.outputFile = temp.path({suffix: '.gcode'})
+	}
+
+	validationResult = tv4.validateResult(options, configSchema, null, true)
 
 
 	if (!validationResult.valid)
@@ -234,9 +262,12 @@ nodeSlicer.render = function (options, callback) {
 
 	options = applyDefaults(jsonSchemaDefaults(clone(configSchema)), options)
 
+	var shell = getShellCommand(options)
+
+	//console.log(shell)
 
 	childProcess.exec(
-		getShellCommand(options),
+		shell,
 		function (error, stdout, stderr) {
 
 			if (error) {
@@ -244,7 +275,7 @@ nodeSlicer.render = function (options, callback) {
 				return
 			}
 
-			if (!options.outputFile)
+			if (useTemporaryOutputFile)
 				fs.readFile(options.outputFile, {}, function (error, data) {
 
 					if (error) {

@@ -1,5 +1,8 @@
 title: NodeSlicer Configuration Schema
 type: object
+oneOf:
+  - required: [inputFile]
+  - required: [inputFiles]
 properties:
   save:
     description: Save configuration to the specified file
@@ -57,7 +60,7 @@ properties:
     minimum: 1
 
    # Output options:
-   postProcessScripts:
+  postProcessScripts:
     description: >
       Generated gcode will be processed with the supplied scripts.
     type: array
@@ -311,9 +314,12 @@ properties:
     description: >
       Acceleration will be reset to this value in mm/s^2
       after the specific settings above have been applied.
-      (set zero to disable)
+      (set zero to disable).
+      This is the acceleration your printer will be reset to after
+      the role-specific acceleration values are used (perimeter/infill).
+      Set zero to prevent resetting acceleration at all.
     type: number
-    default: 130
+    default: 0
 
   # Accuracy Options:
   layerHeight:
@@ -579,9 +585,13 @@ properties:
 
   # Retraction options for multi-extruder setups
   retractLengthToolchange:
-    description: Length of retraction in mm when disabling tool
+    description: >
+      Length of retraction in mm when disabling tool.
+      When retraction is triggered before changing tool,
+      filament is pulled back by the specified amount
+      (the length is measured on raw filament, before it enters the extruder).
     type: number
-    default: 1
+    default: 10
 
   retractRestartExtraToolchange:
     description: >
@@ -744,6 +754,7 @@ properties:
   notes:
     description: Notes to be added as comments to the output file
     type: string
+    default: ''
 
   resolution:
     description: >
@@ -769,41 +780,111 @@ properties:
     description: >
       Set extrusion width manually.
       It accepts either an absolute value in mm (like 0.65)
-      or a percentage over layer height (like 200%)
+      or a percentage over layer height (like 200%).
+      If left to zero, width gets calculated automatically.
     oneOf:
       - type: number
       - type: string
+    default: 0
 
   firstLayerExtrusionWidth:
-    description: Set a different extrusion width for first layer
-    type: number
+    description: >
+      Set a different extrusion width for first layer.
+      When printing with very low layer heights,
+      you might still want to print a thicker bottom layer to improve adhesion
+      and tolerance for non perfect build plates.
+      This can be expressed as an absolute value in mm or as a percentage
+      (for example: 150%) over the default layer height.
+    oneOf:
+      - type: number
+      - type: string
+    default: 0
 
   perimeterExtrusionWidth:
-    description: Set a different extrusion width for perimeters
-    type: number
+    description: >
+      Set this to a non-zero value in mm to set a manual extrusion width
+      for perimeters.
+      You may want to use thinner extrudates to get more accurate surfaces.
+      If expressed as percentage (for example 200%)
+      it will be computed over layer height.
+    oneOf:
+      - type: number
+      - type: string
+    default: 0
 
   externalPerimeterExtrusionWidth:
-    description: Set a different extrusion width for external perimeters
-    type: number
+    description: >
+      Set a different extrusion width for external perimeters.
+      Set this to a non-zero value to set a manual extrusion width in mm
+      for external perimeters.
+      If left 0, an automatic value will be used that maximizes accuracy
+      of the external visible surfaces.
+      If expressed as percentage (for example 200%)
+      it will be computed over layer height.
+    oneOf:
+      - type: number
+      - type: string
+    default: 0
 
   infillExtrusionWidth:
-    description: Set a different extrusion width for infill
-    type: number
+    description: >
+      Set a different extrusion width for infill.
+      Set this to a non-zero value to set a manual extrusion width
+      in mm for infill.
+      You may want to use fatter extrudates to speed up the infill
+      and make your parts stronger.
+      If expressed as percentage (for example 90%)
+      it will be computed over layer height.
+    oneOf:
+      - type: number
+      - type: string
+    default: 0
 
   solidInfillExtrusionWidth:
-    description: Set a different extrusion width for solid infill
-    type: number
+    description: >
+      Set a different extrusion width for solid infill.
+      Set this to a non-zero value to set a manual extrusion width
+      in mm for infill for solid surfaces.
+      If expressed as percentage (for example 90%)
+      it will be computed over layer height.
+    oneOf:
+      - type: number
+      - type: string
+    default: 0
 
   topInfillExtrusionWidth:
-    description: Set a different extrusion width for top infill
-    type: number
+    description: >
+      Set a different extrusion width for top infill.
+      Set this to a non-zero value to set a manual extrusion width
+      in mm for infill for top surfaces.
+      You may want to use thinner extrudates to fill all narrow regions and
+      get a smoother finish.
+      If expressed as percentage (for example 90%)
+      it will be computed over layer height.
+    oneOf:
+      - type: number
+      - type: string
+    default: 0
 
   supportMaterialExtrusionWidth:
-    description: Set a different extrusion width for support material
-    type: number
+    description: >
+      Set a different extrusion width for support material.
+      Set this to a non-zero value to set a manual extrusion width
+      in mm for support material.
+      If expressed as percentage (for example 90%)
+      it will be computed over layer height.
+    oneOf:
+      - type: number
+      - type: string
+    default: 0
 
   bridgeFlowRatio:
-    description: Multiplier for extrusion when bridging
+    description: >
+      Multiplier for extrusion when bridging.
+      This factor affects the amount of plastic for bridging.
+      You can decrease it slightly to pull the extrudates and prevent sagging,
+      although default settings are usually good and you should experiment
+      with cooling (use a fan) before tweaking this.
     type: number
     minimum: 0
     exclusiveMinimum: true
@@ -814,9 +895,20 @@ properties:
   extruderOffset:
     description: >
       Offset of each extruder if firmware doesn't handle the displacement
-      (can be specified multiple times)
-    type: string
-    default: 0x0
+      (can be specified multiple times).
+      If your firmware doesn't handle the extruder displacement you need
+      the G-code to take it into account.
+      This option lets you specify the displacement of each extruder with
+      respect to the first one. It expects positive coordinates
+      (they will be subtracted from the XY coordinate).
+    type: object
+    properties:
+      x:
+        type: number
+        default: 0
+      y:
+        type: number
+        default: 0
 
   perimeterExtruder:
     description: Extruder to use for perimeters
@@ -860,4 +952,6 @@ properties:
       Temperature difference to be applied when an extruder
       is not active and ooze-prevention is enabled
     type: number
+    minimum: -400
+    maximum: 400
     default: -5
