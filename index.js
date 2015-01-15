@@ -247,10 +247,13 @@ nodeSlicer.render = function (options, callback) {
 
 	var useTemporaryOutputFile,
 		validationResult,
-		outputFile
+		shellCommand,
+		originalOutputFile
 
-	if (!options.outputFile) {
+
+	if (!options.outputFile || !options.header) {
 		useTemporaryOutputFile = true
+		originalOutputFile = options.outputFile
 		options.outputFile = temp.path({suffix: '.gcode'})
 	}
 
@@ -262,25 +265,38 @@ nodeSlicer.render = function (options, callback) {
 
 	options = applyDefaults(jsonSchemaDefaults(clone(configSchema)), options)
 
-	var shell = getShellCommand(options)
 
-	//console.log(shell)
+	shellCommand = getShellCommand(options)
+
+	if (options.verbose)
+		console.log(shellCommand)
 
 	childProcess.exec(
-		shell,
+		shellCommand,
 		function (error, stdout, stderr) {
 
-			if (error) {
-				callback(error)
-				return
-			}
+			if (error)
+				return callback(error)
 
 			if (useTemporaryOutputFile)
 				fs.readFile(options.outputFile, {}, function (error, data) {
 
-					if (error) {
+
+					if (error)
 						callback(error)
-						return
+
+					else if (!options.header) {
+						// Remove header (54 ascii characters long)
+						// and write file back
+
+						// TODO: Fix this ugly workaround (not easy!)
+
+						return fs.writeFile(
+							originalOutputFile,
+							data.slice(55),
+							{encoding: 'utf-8'},
+							callback
+						)
 					}
 					else
 						callback(null, data)

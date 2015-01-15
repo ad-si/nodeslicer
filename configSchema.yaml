@@ -4,6 +4,12 @@ oneOf:
   - required: [inputFile]
   - required: [inputFiles]
 properties:
+  # Additional NodeSlicer parameters
+  header:
+    description: Print the Slic3er header line with timestamp
+    default: true
+
+  # IO settings
   save:
     description: Save configuration to the specified file
     type: string
