@@ -1,27 +1,25 @@
 # NodeSlicer
 
-Node.js wrapper for the Slic3r-cli plus additional configuration parameters.
+Wrapper for the PrusaSlicer CLI plus additional configuration parameters.
 
 
 ## Installation
 
-`$ npm install nodeslicer`
+```shell
+npm install nodeslicer
+```
 
 
 ## Usage
 
-```
-var nodeSlicer = require('nodeslicer'),
-    options = {
-        inputFile: 'path/to/file'
-        // For more options check out the configSchema.yaml file
-    }
+```ts
+import { render } from "nodeslicer"
 
+const options = {
+  inputFile: 'path/to/file.stl'
+  // For more options check out the configSchema.yaml file
+}
 
-nodeSlicer.render(options, function (error, bufferData) {
-    if (error)
-        console.error(error.message)
-    else
-        console.log(bufferData.toString('utf8'))
-})
+const gcode = render(options)
+console.log(gcode)
 ```

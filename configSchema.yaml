@@ -6,7 +6,7 @@ oneOf:
 properties:
   # Additional NodeSlicer parameters
   header:
-    description: Print the Slic3er header line with timestamp
+    description: Print the header line with timestamp
     default: true
 
   # IO settings

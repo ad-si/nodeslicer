@@ -1,15 +1,24 @@
 {
   "name": "nodeslicer",
   "version": "0.2.0",
-  "description": "Node.js wrapper for Slic3r",
+  "description": "Wrapper for PrusaSlicer",
+  "type": "module",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adius/nodeslicer.git"
+    "url": "git+https://github.com/adius/nodeslicer.git"
   },
   "keywords": [
+    "3d-printing",
+    "3d",
+    "cad",
+    "g-code",
+    "gcode",
+    "prusa",
+    "prusaslicer",
+    "slic3r",
     "slicer",
-    "slic3r"
+    "stl"
   ],
   "author": "Adrian Sieber <mail@adriansieber.com>",
   "license": "MIT",
@@ -18,13 +27,19 @@
   },
   "homepage": "https://github.com/adius/nodeslicer",
   "dependencies": {
-    "clone": "^0.2.0",
-    "js-yaml": "^3.2.5",
-    "json-schema-defaults": "0.0.2",
-    "temp": "^0.8.1",
-    "tv4": "^1.1.5"
+    "@types/clone": "^2.1.4",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.12.7",
+    "@types/temp": "^0.9.4",
+    "@types/tv4": "^1.2.33",
+    "clone": "^2.1.2",
+    "js-yaml": "^4.1.0",
+    "json-schema-defaults": "0.4.0",
+    "temp": "^0.9.4",
+    "tv4": "^1.3.0"
   },
-  "scripts": {
-    "test": "node ./test/index.js"
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.4.5"
   }
 }
