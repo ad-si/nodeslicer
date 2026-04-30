@@ -6,7 +6,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adius/nodeslicer.git"
+    "url": "git+https://github.com/ad-si/nodeslicer.git"
   },
   "keywords": [
     "3d-printing",
@@ -23,9 +23,9 @@
   "author": "Adrian Sieber <mail@adriansieber.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/adius/nodeslicer/issues"
+    "url": "https://github.com/ad-si/nodeslicer/issues"
   },
-  "homepage": "https://github.com/adius/nodeslicer",
+  "homepage": "https://github.com/ad-si/nodeslicer",
   "dependencies": {
     "@types/clone": "^2.1.4",
     "@types/js-yaml": "^4.0.9",

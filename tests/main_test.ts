@@ -15,11 +15,9 @@ describe("NodeSlicer", () => {
     expect(Buffer.isBuffer(dataBuffer))
 
     const bufferString = dataBuffer.toString().split("\n").slice(2).join("\n")
-    const fileString = await fs
-      .readFile(path.join(__dirname, "cone.gcode"), {
-        encoding: "utf-8",
-      })
-      .toString()
+    const fileString = await fs.readFile(path.join(__dirname, "cone.gcode"), {
+      encoding: "utf-8",
+    })
 
     assert.equal(
       bufferString + "\n",
@@ -27,7 +25,7 @@ describe("NodeSlicer", () => {
       bufferString.length +
         " and " +
         fileString.length +
-        "reference Gcode file differ!"
+        " reference Gcode file differ!"
     )
   })
 })

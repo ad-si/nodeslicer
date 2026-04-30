@@ -24,8 +24,9 @@ function toPercentString(val: number) {
   return String(val * 100) + "%"
 }
 
-function getcmdArgs(o: Record<string, any>): string[] {
+export function getcmdArgs(o: Record<string, any>): string[] {
   return [
+    "--export-gcode",
     ["--output", o.outputFile],
 
     // Non-slicing actions
@@ -177,7 +178,9 @@ function getcmdArgs(o: Record<string, any>): string[] {
     ["--scale", o.scale],
     ["--rotate", o.rotate],
     ["--duplicate", o.duplicate],
-    ["--duplicate-grid", o.duplicateGrid],
+    o.duplicateGrid && o.duplicateGrid !== "1,1"
+      ? ["--duplicate-grid", o.duplicateGrid]
+      : [],
     ["--duplicate-distance", o.duplicateDistance],
     //'--xy-size-compensation ' + o.xySizeCompensation,
 
@@ -187,7 +190,7 @@ function getcmdArgs(o: Record<string, any>): string[] {
     ["--extruder-clearance-height", o.extruderClearanceHeight],
 
     // Miscellaneous options:
-    [o.notes ? ["--notes", o.notes] : []],
+    o.notes ? ["--notes", o.notes] : [],
     ["--resolution", o.resolution],
 
     // TODO: Does not seem to be supported by PrusaSlicer
