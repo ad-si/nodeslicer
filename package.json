@@ -4,6 +4,20 @@
   "description": "Wrapper for PrusaSlicer",
   "type": "module",
   "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "applyDefaults.js",
+    "applyDefaults.d.ts",
+    "configSchema.yaml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ad-si/nodeslicer.git"
